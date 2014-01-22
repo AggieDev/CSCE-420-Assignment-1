@@ -1,26 +1,51 @@
+import java.util.ArrayList;
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
+	private static int singlePegGame;
+	private static int singlePegCornerGame;
+	
 	public static void main(String[] args) {
 		
-		boolean[][] startMoves = new boolean[5][5];
-		for(int i = 0; i < 5; i++)
+		//make sure to increase heap size
+		//to print a board, call board.printBoard();
+		//to print moves list for a board, call board.printValidMoves();
+		
+		singlePegGame = 0;
+		singlePegCornerGame = 0;
+		
+		GameBoard board = new GameBoard(0, 0);
+//		board.printBoard();
+//		board.printValidMoves();
+		
+		BoardTree top = new BoardTree(board);		
+		System.out.println("Running....");
+		runGames(top);
+
+		System.out.println("===============================================");
+		System.out.println("Final Statistics:");
+		System.out.println("Games with single peg at finish: " + singlePegGame);		//should be 29760
+		System.out.println("Games with single peg at corner: " + singlePegCornerGame);
+	}
+	
+	public static void runGames(BoardTree node)
+	{
+		node.populateTree();
+		//node.getBoard().printBoard();
+		ArrayList<BoardTree> thisNodeChildTrees = node.getChildTrees();
+		if(thisNodeChildTrees.size() > 0)
 		{
-			for(int j = 0; j < 5; j++)
+			for(int i = 0; i < thisNodeChildTrees.size(); i++)
+				runGames(thisNodeChildTrees.get(i));
+		}
+		else	//game is complete
+		{
+			if(node.getBoard().isSinglePeg())
 			{
-				startMoves[i][j] = true;
+				singlePegGame++;
+				if(node.getBoard().isSingleCornerPeg())
+					singlePegCornerGame++;
 			}
 		}
-		startMoves[0][0] = false;	//empty hole
-		GameBoard board = new GameBoard(startMoves);
-		System.out.println("Starting board:");
-		board.print();
-		
-		Game game = new Game(board);
-		game.start();
 	}
-
 }
