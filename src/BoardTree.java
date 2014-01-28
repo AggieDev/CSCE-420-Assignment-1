@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-
+//boardtree
 public class BoardTree {
 
 	private GameBoard thisNodeBoard;
